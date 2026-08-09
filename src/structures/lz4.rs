@@ -84,6 +84,49 @@ pub fn parse_lz4_file_header(lz4_data: &[u8]) -> Result<LZ4FileHeader, Structure
     Err(StructureError)
 }
 
+/// Struct to store LZ4 legacy frame block header info
+#[derive(Debug, Default, Clone)]
+pub struct LZ4LegacyBlockHeader {
+    pub data_size: usize,
+    pub header_size: usize,
+}
+
+/// Parse an LZ4 legacy frame block header
+///
+/// Legacy frames have no end marker: they are just a series of blocks, each one a u32 compressed
+/// size followed by that many bytes of block data. A frame therefore ends at EOF, or wherever the
+/// next u32 is not a plausible block size (the magic bytes of a following frame, for example, are
+/// far larger than any legal compressed block).
+pub fn parse_lz4_legacy_block_header(
+    lz4_block_data: &[u8],
+) -> Result<LZ4LegacyBlockHeader, StructureError> {
+    // Legacy frames use a fixed uncompressed block size of 8MB
+    const UNCOMPRESSED_BLOCK_SIZE: usize = 8 * 1024 * 1024;
+
+    // Worst case expansion for an incompressible block, per LZ4_COMPRESSBOUND
+    const MAX_COMPRESSED_BLOCK_SIZE: usize =
+        UNCOMPRESSED_BLOCK_SIZE + (UNCOMPRESSED_BLOCK_SIZE / 255) + 16;
+
+    const BLOCK_STRUCT_SIZE: usize = 4;
+
+    // Block headers are just a u32 size field
+    let block_structure = vec![("block_size", "u32")];
+
+    if let Ok(block_header) = common::parse(lz4_block_data, &block_structure, "little") {
+        // A zero length block is not valid, nor is one larger than a legacy block can possibly be
+        if block_header["block_size"] != 0
+            && block_header["block_size"] <= MAX_COMPRESSED_BLOCK_SIZE
+        {
+            return Ok(LZ4LegacyBlockHeader {
+                data_size: block_header["block_size"],
+                header_size: BLOCK_STRUCT_SIZE,
+            });
+        }
+    }
+
+    Err(StructureError)
+}
+
 /// Struct to store LZ4 block header info
 #[derive(Debug, Default, Clone)]
 pub struct LZ4BlockHeader {

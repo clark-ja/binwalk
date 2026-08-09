@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // lz4 legacy frame
+        signatures::common::Signature {
+            name: "lz4_legacy".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::lz4::lz4_legacy_magic(),
+            parser: signatures::lz4::lz4_legacy_parser,
+            description: signatures::lz4::LEGACY_DESCRIPTION.to_string(),
+            extractor: Some(extractors::lz4::lz4_extractor()),
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

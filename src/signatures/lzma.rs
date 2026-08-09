@@ -9,8 +9,19 @@ pub const DESCRIPTION: &str = "LZMA compressed data";
 pub fn lzma_magic() -> Vec<Vec<u8>> {
     let mut magic_signatures: Vec<Vec<u8>> = vec![];
 
-    // Common LZMA properties
-    let supported_properties: Vec<u8> = vec![0x5D, 0x6E, 0x6D, 0x6C];
+    /*
+     * Known LZMA properties bytes.
+     *
+     * The properties byte encodes the lc, lp and pb values as ((pb * 5) + lp) * 9 + lc.
+     * Only a subset of the possible combinations are ever produced by real encoders; this is the
+     * list of values that have been observed in the wild.
+     */
+    let supported_properties: Vec<u8> = vec![
+        0x51, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x63, 0x64, 0x65, 0x66, 0x6C, 0x6D, 0x6E, 0x75, 0x76,
+        0x7E, 0x87, 0x88, 0x89, 0x8A, 0x8B, 0x90, 0x91, 0x92, 0x93, 0x99, 0x9A, 0x9B, 0xA2, 0xA3,
+        0xAB, 0xB4, 0xB5, 0xB6, 0xB7, 0xB8, 0xBD, 0xBE, 0xBF, 0xC0, 0xC6, 0xC7, 0xC8, 0xCF, 0xD0,
+        0xD8,
+    ];
 
     let supported_dictionary_sizes: Vec<u32> = vec![
         0x10_00_00_00,

@@ -110,14 +110,24 @@ pub fn pem_carver(
 }
 
 fn get_pem_size(file_data: &[u8], start_of_pem_offset: usize) -> Option<usize> {
+    /*
+     * There must be an end marker here for every begin marker in signatures::pem, else the size of
+     * the PEM data cannot be determined and the signature is discarded as a false positive.
+     */
     let eof_markers = vec![
         b"-----END PUBLIC KEY-----".to_vec(),
+        b"-----END RSA PUBLIC KEY-----".to_vec(),
+        b"-----END DSA PUBLIC KEY-----".to_vec(),
+        b"-----END ECDSA PUBLIC KEY-----".to_vec(),
         b"-----END CERTIFICATE-----".to_vec(),
         b"-----END PRIVATE KEY-----".to_vec(),
         b"-----END EC PRIVATE KEY-----".to_vec(),
         b"-----END RSA PRIVATE KEY-----".to_vec(),
         b"-----END DSA PRIVATE KEY-----".to_vec(),
         b"-----END OPENSSH PRIVATE KEY-----".to_vec(),
+        b"-----END ANY PRIVATE KEY-----".to_vec(),
+        b"-----END ENCRYPTED PRIVATE KEY-----".to_vec(),
+        b"-----END TSS2 PRIVATE KEY-----".to_vec(),
     ];
 
     let newline_chars: Vec<u8> = vec![0x0D, 0x0A];

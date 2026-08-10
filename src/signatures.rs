@@ -169,6 +169,7 @@ pub mod pchrom;
 pub mod pdf;
 pub mod pe;
 pub mod pem;
+pub mod pgp;
 pub mod pjl;
 pub mod pkcs_der;
 pub mod png;

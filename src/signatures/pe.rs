@@ -4,16 +4,15 @@ use crate::structures::pe::parse_pe_header;
 /// Human readable description
 pub const DESCRIPTION: &str = "Windows PE binary";
 
-/// Common PE file magics
+/// PE file magic
 pub fn pe_magic() -> Vec<Vec<u8>> {
     /*
-     * This matches the first 16 bytes of a DOS header, from e_magic through e_ss.
-     * Note that these values may differ in some special cases, but these are common ones.
+     * Only the two bytes that begin the DOS header are matched here; the rest of the header varies
+     * between linkers and DOS stubs. What makes a match a PE binary is checked by the parser: the
+     * reserved fields of the DOS header must be zero, and the offset it holds must point at a PE
+     * header with a known machine type.
      */
-    vec![
-        b"\x4d\x5a\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff\x00\x00".to_vec(),
-        b"\x4d\x5a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00".to_vec(),
-    ]
+    vec![b"MZ".to_vec()]
 }
 
 /// Validate a PE header

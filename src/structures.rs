@@ -124,6 +124,7 @@ pub mod elf;
 pub mod ext;
 pub mod fat;
 pub mod gif;
+pub mod gpg;
 pub mod gzip;
 pub mod iso9660;
 pub mod jboot;

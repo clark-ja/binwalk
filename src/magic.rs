@@ -426,6 +426,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::gpg::GPG_SIGNED_DESCRIPTION.to_string(),
             extractor: Some(extractors::gpg::gpg_extractor()),
         },
+        // GPG key trust database
+        signatures::common::Signature {
+            name: "gpg_trustdb".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::gpg::gpg_trustdb_magic(),
+            parser: signatures::gpg::gpg_trustdb_parser,
+            description: signatures::gpg::GPG_TRUSTDB_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // pem certificates
         signatures::common::Signature {
             name: "pem_certificate".to_string(),

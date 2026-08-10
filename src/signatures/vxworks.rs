@@ -5,6 +5,13 @@ use crate::signatures::common::{CONFIDENCE_HIGH, CONFIDENCE_LOW, SignatureError,
 /// Human readable descriptions
 pub const SYMTAB_DESCRIPTION: &str = "VxWorks symbol table";
 pub const WIND_KERNEL_DESCRIPTION: &str = "VxWorks WIND kernel version";
+pub const OS_VERSION_DESCRIPTION: &str = "VxWorks operating system version";
+
+/// VxWorks operating system version banner magic
+pub fn os_version_magic() -> Vec<Vec<u8>> {
+    // The magic bytes are the NULL terminated runtime name that starts the version banner
+    vec![b"VxWorks\x00".to_vec()]
+}
 
 /// WIND kernel version magic
 pub fn wind_kernel_magic() -> Vec<Vec<u8>> {
@@ -95,4 +102,72 @@ pub fn symbol_table_parser(
     }
 
     Err(SignatureError)
+}
+
+/// Validates VxWorks operating system version signatures
+pub fn os_version_parser(
+    file_data: &[u8],
+    offset: usize,
+) -> Result<SignatureResult, SignatureError> {
+    /*
+     * The version banner is a series of fixed size fields: the runtime name, which is the magic,
+     * the version string, the runtime name again, and then the date the image was built.
+     */
+    const VERSION_OFFSET: usize = 8;
+    const RUNTIME_NAME_OFFSET: usize = 16;
+    const CREATION_DATE_OFFSET: usize = 32;
+
+    const RUNTIME_NAME: &[u8; 7] = b"VxWorks";
+
+    // The version has to fit in the field that follows the magic bytes
+    const MAX_VERSION_SIZE: usize = RUNTIME_NAME_OFFSET - VERSION_OFFSET;
+
+    // Sane limit on the length of the creation date string
+    const MAX_CREATION_DATE_SIZE: usize = 64;
+
+    let mut result = SignatureResult {
+        offset,
+        description: OS_VERSION_DESCRIPTION.to_string(),
+        confidence: CONFIDENCE_HIGH,
+        ..Default::default()
+    };
+
+    let banner_data = &file_data[offset..];
+
+    // The runtime name appears a second time, after the version string
+    let runtime_name_end = RUNTIME_NAME_OFFSET + RUNTIME_NAME.len();
+
+    if banner_data.get(RUNTIME_NAME_OFFSET..runtime_name_end) != Some(RUNTIME_NAME) {
+        return Err(SignatureError);
+    }
+
+    // A banner with no version string in it is of no use
+    let version = match banner_data.get(VERSION_OFFSET..RUNTIME_NAME_OFFSET) {
+        Some(version_data) => get_cstring(version_data),
+        None => return Err(SignatureError),
+    };
+
+    if version.is_empty() || version.len() >= MAX_VERSION_SIZE {
+        return Err(SignatureError);
+    }
+
+    result.size = CREATION_DATE_OFFSET;
+    result.description = format!("{}: \"{}\"", result.description, version);
+
+    // The creation date is optional
+    let creation_date_end = std::cmp::min(
+        CREATION_DATE_OFFSET + MAX_CREATION_DATE_SIZE,
+        banner_data.len(),
+    );
+
+    if let Some(creation_date_data) = banner_data.get(CREATION_DATE_OFFSET..creation_date_end) {
+        let creation_date = get_cstring(creation_date_data);
+
+        if !creation_date.is_empty() && creation_date.len() < MAX_CREATION_DATE_SIZE {
+            result.size += creation_date.len();
+            result.description = format!("{}, compiled: \"{}\"", result.description, creation_date);
+        }
+    }
+
+    Ok(result)
 }

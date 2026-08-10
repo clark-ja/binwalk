@@ -646,6 +646,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::vxworks::WIND_KERNEL_DESCRIPTION.to_string(),
             extractor: None,
         },
+        // VxWorks operating system version
+        signatures::common::Signature {
+            name: "vxworks_os_version".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: true,
+            magic: signatures::vxworks::os_version_magic(),
+            parser: signatures::vxworks::os_version_parser,
+            description: signatures::vxworks::OS_VERSION_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // vxworks symbol table
         signatures::common::Signature {
             name: "vxworks_symtab".to_string(),

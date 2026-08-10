@@ -1,8 +1,19 @@
 use crate::signatures::common::{CONFIDENCE_MEDIUM, SignatureError, SignatureResult};
-use crate::structures::rtk::parse_rtk_header;
+use crate::structures::rtk::{parse_rome_header, parse_rtk_header};
 
-/// Human readable description
+/// Human readable descriptions
 pub const DESCRIPTION: &str = "RTK firmware header";
+pub const ROME_DESCRIPTION: &str = "Realtek ROME bootloader firmware header";
+
+/// ROME bootloader magic bytes; these are specific to each product that uses the bootloader
+pub fn rome_magic() -> Vec<Vec<u8>> {
+    vec![
+        // Netgear KWGR614
+        b"G614".to_vec(),
+        // Linksys WRT54GX
+        b"\x59\xA0\xE8\x42".to_vec(),
+    ]
+}
 
 /// RTK firmware images always start with these bytes
 pub fn rtk_magic() -> Vec<Vec<u8>> {
@@ -32,6 +43,36 @@ pub fn rtk_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, Si
             );
             return Ok(result);
         }
+    }
+
+    Err(SignatureError)
+}
+
+/// Validates a ROME bootloader firmware header
+pub fn rome_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, SignatureError> {
+    // Successful return value
+    let mut result = SignatureResult {
+        offset,
+        description: ROME_DESCRIPTION.to_string(),
+        confidence: CONFIDENCE_MEDIUM,
+        ..Default::default()
+    };
+
+    if let Ok(rome_header) = parse_rome_header(&file_data[offset..]) {
+        /*
+         * Only the header itself is reported, so that whatever the image contains is scanned for
+         * signatures of its own.
+         */
+        result.size = rome_header.header_size;
+        result.description = format!(
+            "{}, image type: {}, header version: {}, created: {}, image size: {} bytes",
+            result.description,
+            rome_header.image_type,
+            rome_header.header_version,
+            rome_header.creation_date,
+            rome_header.image_size
+        );
+        return Ok(result);
     }
 
     Err(SignatureError)

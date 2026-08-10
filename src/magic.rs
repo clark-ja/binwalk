@@ -866,6 +866,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::rtk::DESCRIPTION.to_string(),
             extractor: None,
         },
+        // Realtek ROME bootloader firmware header
+        signatures::common::Signature {
+            name: "rome".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::rtk::rome_magic(),
+            parser: signatures::rtk::rome_parser,
+            description: signatures::rtk::ROME_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // AES S-Box
         signatures::common::Signature {
             name: "aes_sbox".to_string(),

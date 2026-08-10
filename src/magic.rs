@@ -668,6 +668,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::ecos::EXCEPTION_HANDLER_DESCRIPTION.to_string(),
             extractor: None,
         },
+        // eCos RTOS string reference
+        signatures::common::Signature {
+            name: "ecos_string".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::ecos::string_reference_magic(),
+            parser: signatures::ecos::string_reference_parser,
+            description: signatures::ecos::STRING_REFERENCE_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // dmg
         signatures::common::Signature {
             name: "dmg".to_string(),

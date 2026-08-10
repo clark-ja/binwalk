@@ -314,6 +314,28 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::qnx::IFS_DESCRIPTION.to_string(),
             extractor: Some(extractors::dumpifs::dumpifs_extractor()),
         },
+        // qnx4 file system
+        signatures::common::Signature {
+            name: "qnx4".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::qnx::qnx4_magic(),
+            parser: signatures::qnx::qnx4_parser,
+            description: signatures::qnx::QNX4_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // qnx6 file system
+        signatures::common::Signature {
+            name: "qnx6".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::qnx::qnx6_magic(),
+            parser: signatures::qnx::qnx6_parser,
+            description: signatures::qnx::QNX6_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // RomFS
         signatures::common::Signature {
             name: "romfs".to_string(),

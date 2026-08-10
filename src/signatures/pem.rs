@@ -7,6 +7,7 @@ use base64::prelude::BASE64_STANDARD;
 pub const PEM_PUBLIC_KEY_DESCRIPTION: &str = "PEM public key";
 pub const PEM_PRIVATE_KEY_DESCRIPTION: &str = "PEM private key";
 pub const PEM_CERTIFICATE_DESCRIPTION: &str = "PEM certificate";
+pub const PEM_CERTIFICATE_REQUEST_DESCRIPTION: &str = "PEM certificate request";
 
 /// Public key magic
 pub fn pem_public_key_magic() -> Vec<Vec<u8>> {
@@ -37,6 +38,14 @@ pub fn pem_certificate_magic() -> Vec<Vec<u8>> {
     vec![b"-----BEGIN CERTIFICATE-----".to_vec()]
 }
 
+/// Certificate request magics
+pub fn pem_certificate_request_magic() -> Vec<Vec<u8>> {
+    vec![
+        b"-----BEGIN CERTIFICATE REQUEST-----".to_vec(),
+        b"-----BEGIN NEW CERTIFICATE REQUEST-----".to_vec(),
+    ]
+}
+
 /// Validates both PEM certificate and key signatures
 pub fn pem_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, SignatureError> {
     // Enough bytes to uniquely differentiate certs from keys
@@ -57,6 +66,7 @@ pub fn pem_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, Si
     let mut public_magics: Vec<Vec<u8>> = vec![];
     let mut private_magics: Vec<Vec<u8>> = vec![];
     let mut certificate_magics: Vec<Vec<u8>> = vec![];
+    let mut certificate_request_magics: Vec<Vec<u8>> = vec![];
 
     for public_magic in pem_public_key_magic() {
         public_magics.push(public_magic[0..MIN_PEM_LEN].to_vec());
@@ -70,6 +80,10 @@ pub fn pem_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, Si
         certificate_magics.push(cert_magic[0..MIN_PEM_LEN].to_vec());
     }
 
+    for cert_request_magic in pem_certificate_request_magic() {
+        certificate_request_magics.push(cert_request_magic[0..MIN_PEM_LEN].to_vec());
+    }
+
     // Sanity check available data
     if let Some(pem_magic) = file_data.get(offset..offset + MIN_PEM_LEN) {
         // Check if this magic is for a PEM cert or a PEM key
@@ -79,6 +93,8 @@ pub fn pem_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, Si
             result.description = PEM_PRIVATE_KEY_DESCRIPTION.to_string();
         } else if certificate_magics.contains(&pem_magic.to_vec()) {
             result.description = PEM_CERTIFICATE_DESCRIPTION.to_string();
+        } else if certificate_request_magics.contains(&pem_magic.to_vec()) {
+            result.description = PEM_CERTIFICATE_REQUEST_DESCRIPTION.to_string();
         } else {
             // This function will only be called if one of the magics was found, so this should never happen
             return Err(SignatureError);

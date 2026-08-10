@@ -61,6 +61,36 @@ pub fn pem_certificate_extractor() -> Extractor {
     }
 }
 
+/// Internal extractor function for carving out PEM certificate requests
+///
+/// ```
+/// use std::io::ErrorKind;
+/// use std::process::Command;
+/// use binwalk::extractors::common::ExtractorType;
+/// use binwalk::extractors::pem::pem_certificate_request_extractor;
+///
+/// match pem_certificate_request_extractor().utility {
+///     ExtractorType::None => panic!("Invalid extractor type of None"),
+///     ExtractorType::Internal(func) => println!("Internal extractor OK: {:?}", func),
+///     ExtractorType::External(cmd) => {
+///         if let Err(e) = Command::new(&cmd).output() {
+///             if e.kind() == ErrorKind::NotFound {
+///                 panic!("External extractor '{}' not found", cmd);
+///             } else {
+///                 panic!("Failed to execute external extractor '{}': {}", cmd, e);
+///             }
+///         }
+///     }
+/// }
+/// ```
+pub fn pem_certificate_request_extractor() -> Extractor {
+    Extractor {
+        do_not_recurse: true,
+        utility: ExtractorType::Internal(pem_certificate_request_carver),
+        ..Default::default()
+    }
+}
+
 pub fn pem_certificate_carver(
     file_data: &[u8],
     offset: usize,
@@ -72,6 +102,20 @@ pub fn pem_certificate_carver(
         offset,
         output_directory,
         Some(CERTIFICATE_FILE_NAME),
+    )
+}
+
+pub fn pem_certificate_request_carver(
+    file_data: &[u8],
+    offset: usize,
+    output_directory: Option<&str>,
+) -> ExtractionResult {
+    const CERTIFICATE_REQUEST_FILE_NAME: &str = "pem.csr";
+    pem_carver(
+        file_data,
+        offset,
+        output_directory,
+        Some(CERTIFICATE_REQUEST_FILE_NAME),
     )
 }
 
@@ -118,6 +162,8 @@ fn get_pem_size(file_data: &[u8], start_of_pem_offset: usize) -> Option<usize> {
         b"-----END RSA PRIVATE KEY-----".to_vec(),
         b"-----END DSA PRIVATE KEY-----".to_vec(),
         b"-----END OPENSSH PRIVATE KEY-----".to_vec(),
+        b"-----END CERTIFICATE REQUEST-----".to_vec(),
+        b"-----END NEW CERTIFICATE REQUEST-----".to_vec(),
     ];
 
     let newline_chars: Vec<u8> = vec![0x0D, 0x0A];

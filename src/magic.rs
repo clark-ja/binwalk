@@ -437,6 +437,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::pem::PEM_CERTIFICATE_DESCRIPTION.to_string(),
             extractor: Some(extractors::pem::pem_certificate_extractor()),
         },
+        // pem certificate requests
+        signatures::common::Signature {
+            name: "pem_certificate_request".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::pem::pem_certificate_request_magic(),
+            parser: signatures::pem::pem_parser,
+            description: signatures::pem::PEM_CERTIFICATE_REQUEST_DESCRIPTION.to_string(),
+            extractor: Some(extractors::pem::pem_certificate_request_extractor()),
+        },
         // pem public keys
         signatures::common::Signature {
             name: "pem_public_key".to_string(),

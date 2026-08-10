@@ -1009,6 +1009,28 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::wince::DESCRIPTION.to_string(),
             extractor: Some(extractors::wince::wince_extractor()),
         },
+        // Windows CE installer
+        signatures::common::Signature {
+            name: "wince_installer".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::wince::wince_installer_magic(),
+            parser: signatures::wince::wince_installer_parser,
+            description: signatures::wince::INSTALLER_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // Windows CE memory segment header
+        signatures::common::Signature {
+            name: "wince_memory_segment".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::wince::wince_memory_segment_magic(),
+            parser: signatures::wince::wince_memory_segment_parser,
+            description: signatures::wince::MEMORY_SEGMENT_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // Dahua ZIP
         signatures::common::Signature {
             name: "dahua_zip".to_string(),

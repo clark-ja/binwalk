@@ -236,6 +236,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::zip::DESCRIPTION.to_string(),
             extractor: Some(extractors::sevenzip::sevenzip_extractor()),
         },
+        // zip multi-volume archive
+        signatures::common::Signature {
+            name: "zip_multi_volume".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::zip::zip_multi_volume_magic(),
+            parser: signatures::zip::zip_multi_volume_parser,
+            description: signatures::zip::MULTI_VOLUME_DESCRIPTION.to_string(),
+            extractor: Some(extractors::sevenzip::sevenzip_extractor()),
+        },
         // Intel PCH ROM
         signatures::common::Signature {
             name: "pchrom".to_string(),

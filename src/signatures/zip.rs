@@ -3,30 +3,63 @@ use crate::signatures::common::{CONFIDENCE_HIGH, SignatureError, SignatureResult
 use crate::structures::zip::{parse_eocd_header, parse_zip_header};
 use aho_corasick::AhoCorasick;
 
-/// Human readable description
+/// Human readable descriptions
 pub const DESCRIPTION: &str = "ZIP archive";
+pub const MULTI_VOLUME_DESCRIPTION: &str = "ZIP multi-volume archive";
 
 /// ZIP file entry magic bytes
 pub fn zip_magic() -> Vec<Vec<u8>> {
     vec![b"PK\x03\x04".to_vec()]
 }
 
+/// Multi-volume ZIP archives begin with a spanning marker, immediately followed by the first file entry
+pub fn zip_multi_volume_magic() -> Vec<Vec<u8>> {
+    vec![b"PK\x07\x08PK\x03\x04".to_vec()]
+}
+
 /// Validates a ZIP file entry signature
 pub fn zip_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, SignatureError> {
+    parse_zip_archive(file_data, offset, offset, DESCRIPTION)
+}
+
+/// Validates a multi-volume ZIP archive signature
+pub fn zip_multi_volume_parser(
+    file_data: &[u8],
+    offset: usize,
+) -> Result<SignatureResult, SignatureError> {
+    // The first file entry of the archive follows the spanning marker
+    const SPANNING_MARKER_SIZE: usize = 4;
+
+    parse_zip_archive(
+        file_data,
+        offset + SPANNING_MARKER_SIZE,
+        offset,
+        MULTI_VOLUME_DESCRIPTION,
+    )
+}
+
+/// Validates the ZIP archive whose first file entry is at zip_offset; the archive itself, and hence
+/// the reported size, may start earlier than that
+fn parse_zip_archive(
+    file_data: &[u8],
+    zip_offset: usize,
+    result_offset: usize,
+    description: &str,
+) -> Result<SignatureResult, SignatureError> {
     // Success return value
     let mut result = SignatureResult {
-        offset,
-        description: DESCRIPTION.to_string(),
+        offset: result_offset,
+        description: description.to_string(),
         confidence: CONFIDENCE_HIGH,
         ..Default::default()
     };
 
     // Parse the ZIP file header
-    if let Ok(zip_file_header) = parse_zip_header(&file_data[offset..]) {
+    if let Ok(zip_file_header) = parse_zip_header(&file_data[zip_offset..]) {
         // Locate the end-of-central-directory header, which must come after the zip local file entries
-        match find_zip_eof(file_data, offset) {
+        match find_zip_eof(file_data, zip_offset) {
             Ok(zip_info) => {
-                result.size = zip_info.eof - offset;
+                result.size = zip_info.eof - result_offset;
                 result.description = format!(
                     "{}, version: {}.{}, file count: {}, total size: {} bytes",
                     result.description,
@@ -38,9 +71,9 @@ pub fn zip_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, Si
             }
             // If the ZIP file is corrupted and no EOCD header exists, attempt to parse all the individual ZIP file headers
             Err(_) => {
-                let available_data = file_data.len() - offset;
+                let available_data = file_data.len() - zip_offset;
                 let mut previous_file_header_offset = None;
-                let mut next_file_header_offset = offset + zip_file_header.total_size;
+                let mut next_file_header_offset = zip_offset + zip_file_header.total_size;
 
                 while is_offset_safe(
                     available_data,
@@ -53,7 +86,7 @@ pub fn zip_parser(file_data: &[u8], offset: usize) -> Result<SignatureResult, Si
                             next_file_header_offset += zip_header.total_size;
                         }
                         Err(_) => {
-                            result.size = next_file_header_offset - offset;
+                            result.size = next_file_header_offset - result_offset;
                             result.description = format!(
                                 "{}, version: {}.{}, missing end-of-central-directory header, total size: {} bytes",
                                 result.description,

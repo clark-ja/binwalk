@@ -181,6 +181,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::iso9660::DESCRIPTION.to_string(),
             extractor: Some(extractors::iso9660::iso9660_extractor()),
         },
+        // iso9660 boot record
+        signatures::common::Signature {
+            name: "iso9660_boot_record".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::iso9660::iso_boot_record_magic(),
+            parser: signatures::iso9660::iso_boot_record_parser,
+            description: signatures::iso9660::BOOT_RECORD_DESCRIPTION.to_string(),
+            extractor: Some(extractors::iso9660::iso9660_extractor()),
+        },
         // linux kernel
         signatures::common::Signature {
             name: "linux_kernel".to_string(),

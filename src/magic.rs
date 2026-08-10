@@ -789,6 +789,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::pcap::PCAPNG_DESCRIPTION.to_string(),
             extractor: Some(extractors::pcap::pcapng_extractor()),
         },
+        // libpcap
+        signatures::common::Signature {
+            name: "libpcap".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::pcap::libpcap_magic(),
+            parser: signatures::pcap::libpcap_parser,
+            description: signatures::pcap::LIBPCAP_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // RSA encrypted data
         signatures::common::Signature {
             name: "rsa".to_string(),

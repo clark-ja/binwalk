@@ -98,3 +98,111 @@ pub fn parse_pcapng_section_block(block_data: &[u8]) -> Result<PcapSectionBlock,
 
     Err(StructureError)
 }
+
+/// Storage struct for libpcap file header info
+#[derive(Debug, Clone, Default)]
+pub struct LibpcapHeader {
+    pub header_size: usize,
+    pub endianness: String,
+    pub timestamp_resolution: String,
+    pub major_version: usize,
+    pub minor_version: usize,
+    pub snap_length: usize,
+    pub link_type: usize,
+}
+
+/// Parse a libpcap file header
+pub fn parse_libpcap_header(pcap_data: &[u8]) -> Result<LibpcapHeader, StructureError> {
+    // Magic values, in host order; the nanosecond variants only differ in timestamp resolution
+    const MICROSECOND_MAGIC: usize = 0xA1B2C3D4;
+    const NANOSECOND_MAGIC: usize = 0xA1B23C4D;
+
+    // Only version 2.4 has ever been released
+    const MAJOR_VERSION: usize = 2;
+    const MINOR_VERSION: usize = 4;
+
+    // Sane limit on the snap length, which is the largest packet the capture can hold
+    const MAX_SNAP_LENGTH: usize = 0x400000;
+
+    // Link layer types are assigned by tcpdump.org and are nowhere near this large
+    const MAX_LINK_TYPE: usize = 300;
+
+    let libpcap_structure = vec![
+        ("magic", "u32"),
+        ("major_version", "u16"),
+        ("minor_version", "u16"),
+        ("time_zone_offset", "u32"),
+        ("timestamp_accuracy", "u32"),
+        ("snap_length", "u32"),
+        ("link_type", "u32"),
+    ];
+
+    for endianness in ["little", "big"] {
+        if let Ok(libpcap_header) = common::parse(pcap_data, &libpcap_structure, endianness) {
+            let timestamp_resolution = match libpcap_header["magic"] {
+                MICROSECOND_MAGIC => "microsecond",
+                NANOSECOND_MAGIC => "nanosecond",
+                _ => continue,
+            };
+
+            if libpcap_header["major_version"] == MAJOR_VERSION
+                && libpcap_header["minor_version"] == MINOR_VERSION
+                && libpcap_header["snap_length"] <= MAX_SNAP_LENGTH
+                && libpcap_header["link_type"] <= MAX_LINK_TYPE
+            {
+                return Ok(LibpcapHeader {
+                    header_size: common::size(&libpcap_structure),
+                    endianness: endianness.to_string(),
+                    timestamp_resolution: timestamp_resolution.to_string(),
+                    major_version: libpcap_header["major_version"],
+                    minor_version: libpcap_header["minor_version"],
+                    snap_length: libpcap_header["snap_length"],
+                    link_type: libpcap_header["link_type"],
+                });
+            }
+        }
+    }
+
+    Err(StructureError)
+}
+
+/// Storage struct for libpcap packet record info
+#[derive(Debug, Clone, Default)]
+pub struct LibpcapRecord {
+    pub header_size: usize,
+    pub data_size: usize,
+}
+
+/// Parse a libpcap packet record header
+pub fn parse_libpcap_record(
+    record_data: &[u8],
+    endianness: &str,
+    snap_length: usize,
+) -> Result<LibpcapRecord, StructureError> {
+    let record_structure = vec![
+        ("timestamp_seconds", "u32"),
+        ("timestamp_fraction", "u32"),
+        ("captured_length", "u32"),
+        ("original_length", "u32"),
+    ];
+
+    if let Ok(record_header) = common::parse(record_data, &record_structure, endianness) {
+        /*
+         * A record can be shorter than the packet it came from, if the packet was truncated to the
+         * snap length, but never longer, and never longer than the snap length itself. An empty
+         * record is not a packet at all: rejecting it is what stops the walk from running on into
+         * whatever follows the capture.
+         */
+        if record_header["captured_length"] > 0
+            && record_header["captured_length"] <= record_header["original_length"]
+            && record_header["captured_length"] <= snap_length
+        {
+            return Ok(LibpcapRecord {
+                header_size: common::size(&record_structure),
+                data_size: record_header["captured_length"],
+            });
+        }
+    }
+
+    Err(StructureError)
+}

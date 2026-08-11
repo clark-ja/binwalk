@@ -137,8 +137,8 @@ fn fill_chunk_with_wrong_payload_size_is_rejected() {
 /// rejected before extraction allocates anything.
 #[test]
 fn header_with_overflowing_total_size_is_rejected() {
-    // u32::MAX & ~3 to satisfy block_size % 4 == 0
-    let huge = u32::MAX & !3u32;
+    // Largest u32 that is a multiple of 4, to satisfy block_size % 4 == 0
+    let huge = u32::MAX - 3;
     let mut img = sparse_header(huge, huge, 1);
     img.extend(chunk_header(CHUNK_TYPE_DONT_CARE, 1, 12));
 

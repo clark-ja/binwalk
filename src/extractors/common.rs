@@ -1,6 +1,7 @@
 use crate::signatures::common::SignatureResult;
 use log::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::fs;
 use std::io::Write;
 use std::path;
@@ -27,13 +28,53 @@ pub struct ExtractionError;
 pub type InternalExtractor = fn(&[u8], usize, Option<&str>) -> ExtractionResult;
 
 /// Enum to define either an Internal or External extractor type
-#[derive(Debug, Default, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Default, Clone)]
 pub enum ExtractorType {
     External(String),
     Internal(InternalExtractor),
     #[default]
     None,
 }
+
+impl ExtractorType {
+    /// Relative ordering of each variant, used to implement Ord
+    fn variant_order(&self) -> usize {
+        match self {
+            ExtractorType::External(_) => 0,
+            ExtractorType::Internal(_) => 1,
+            ExtractorType::None => 2,
+        }
+    }
+}
+
+/// Equality and ordering are implemented manually, rather than derived, because function pointer
+/// addresses are not unique or stable and thus cannot be meaningfully compared. All internal
+/// extractors therefore compare equal to each other; only the variant, and an external extractor's
+/// command, are considered. These traits exist only so that SignatureResult remains sortable.
+impl Ord for ExtractorType {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match (self, other) {
+            (ExtractorType::External(cmd), ExtractorType::External(other_cmd)) => {
+                cmd.cmp(other_cmd)
+            }
+            _ => self.variant_order().cmp(&other.variant_order()),
+        }
+    }
+}
+
+impl PartialOrd for ExtractorType {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialEq for ExtractorType {
+    fn eq(&self, other: &Self) -> bool {
+        self.cmp(other) == Ordering::Equal
+    }
+}
+
+impl Eq for ExtractorType {}
 
 /// Describes extractors, both external and internal
 #[derive(Debug, Clone, Default, PartialEq, Eq, PartialOrd, Ord)]
@@ -1009,12 +1050,12 @@ pub fn execute(
         }
 
         // Clean up extractor's output directory if extraction failed
-        if !result.success {
-            if let Err(e) = fs::remove_dir_all(&output_directory) {
-                warn!(
-                    "Failed to clean up extraction directory {output_directory} after extraction failure: {e}"
-                );
-            }
+        if !result.success
+            && let Err(e) = fs::remove_dir_all(&output_directory)
+        {
+            warn!(
+                "Failed to clean up extraction directory {output_directory} after extraction failure: {e}"
+            );
         }
     }
 

@@ -64,21 +64,19 @@ pub fn extract_csman_dat(
             let mut entry_data = raw_entry_data.to_vec();
 
             // If the entries are compressed, decompress it (zlib compression)
-            if csman_header.compressed {
-                if let Some(compressed_data) = raw_entry_data.get(COMPRESSED_HEADER_SIZE..) {
-                    // Decompress with a hard upper bound on the output size; this prevents a
-                    // crafted, highly-compressible payload from allocating an arbitrary amount
-                    // of memory (decompression bomb / DoS). Exceeding the limit fails the extraction.
-                    match inflate::decompress_to_vec_with_limit(
-                        compressed_data,
-                        MAX_DECOMPRESSED_SIZE,
-                    ) {
-                        Err(_) => {
-                            return result;
-                        }
-                        Ok(decompressed_data) => {
-                            entry_data = decompressed_data.clone();
-                        }
+            if csman_header.compressed
+                && let Some(compressed_data) = raw_entry_data.get(COMPRESSED_HEADER_SIZE..)
+            {
+                // Decompress with a hard upper bound on the output size; this prevents a
+                // crafted, highly-compressible payload from allocating an arbitrary amount
+                // of memory (decompression bomb / DoS). Exceeding the limit fails the extraction.
+                match inflate::decompress_to_vec_with_limit(compressed_data, MAX_DECOMPRESSED_SIZE)
+                {
+                    Err(_) => {
+                        return result;
+                    }
+                    Ok(decompressed_data) => {
+                        entry_data = decompressed_data.clone();
                     }
                 }
             }

@@ -28,15 +28,10 @@ pub struct JsonLogger {
 
 impl JsonLogger {
     pub fn new(log_file: Option<String>) -> JsonLogger {
-        let mut new_instance = JsonLogger {
+        JsonLogger {
+            json_file: log_file,
             ..Default::default()
-        };
-
-        if log_file.is_some() {
-            new_instance.json_file = Some(log_file.unwrap().clone());
         }
-
-        new_instance
     }
 
     pub fn close(&self) {

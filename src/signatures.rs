@@ -157,6 +157,7 @@ pub mod luks;
 pub mod lz4;
 pub mod lzfse;
 pub mod lzma;
+pub mod lzma_new;
 pub mod lzop;
 pub mod matter_ota;
 pub mod mbr;

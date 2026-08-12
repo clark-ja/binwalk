@@ -380,6 +380,72 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // hpack
+        signatures::common::Signature {
+            name: "hpack".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::legacy_archives::hpack_magic(),
+            parser: signatures::legacy_archives::hpack_parser,
+            description: signatures::legacy_archives::HPACK_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // jam
+        signatures::common::Signature {
+            name: "jam".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::legacy_archives::jam_magic(),
+            parser: signatures::legacy_archives::jam_parser,
+            description: signatures::legacy_archives::JAM_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // parity
+        signatures::common::Signature {
+            name: "parity".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::legacy_archives::parity_magic(),
+            parser: signatures::legacy_archives::parity_parser,
+            description: signatures::legacy_archives::PARITY_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // borg backup segment
+        signatures::common::Signature {
+            name: "borg".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::legacy_archives::borg_magic(),
+            parser: signatures::legacy_archives::borg_parser,
+            description: signatures::legacy_archives::BORG_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // bsa
+        signatures::common::Signature {
+            name: "bsa".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::legacy_archives::bsa_magic(),
+            parser: signatures::legacy_archives::bsa_parser,
+            description: signatures::legacy_archives::BSA_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // lbr
+        signatures::common::Signature {
+            name: "lbr".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::legacy_archives::lbr_magic(),
+            parser: signatures::legacy_archives::lbr_parser,
+            description: signatures::legacy_archives::LBR_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

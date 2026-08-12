@@ -126,6 +126,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::uimage::DESCRIPTION.to_string(),
             extractor: Some(extractors::uimage::uimage_extractor()),
         },
+        // pack200
+        signatures::common::Signature {
+            name: "pack200".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::pack200::pack200_magic(),
+            parser: signatures::pack200::pack200_parser,
+            description: signatures::pack200::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // packimg header
         signatures::common::Signature {
             name: "packimg".to_string(),

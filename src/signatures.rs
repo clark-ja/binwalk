@@ -163,6 +163,7 @@ pub mod mbr;
 pub mod mh01;
 pub mod ntfs;
 pub mod openssl;
+pub mod pack200;
 pub mod packimg;
 pub mod pcap;
 pub mod pchrom;

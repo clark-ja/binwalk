@@ -154,6 +154,7 @@ pub mod rtk;
 pub mod seama;
 pub mod sevenzip;
 pub mod shrs;
+pub mod snappy;
 pub mod squashfs;
 pub mod svg;
 pub mod tplink;

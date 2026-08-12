@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // snappy
+        signatures::common::Signature {
+            name: "snappy".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::snappy::snappy_magic(),
+            parser: signatures::snappy::snappy_parser,
+            description: signatures::snappy::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

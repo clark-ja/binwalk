@@ -380,6 +380,28 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // stuffit
+        signatures::common::Signature {
+            name: "stuffit".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::stuffit::stuffit_magic(),
+            parser: signatures::stuffit::stuffit_parser,
+            description: signatures::stuffit::DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // stuffit deluxe segment
+        signatures::common::Signature {
+            name: "stuffit_segment".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::stuffit::stuffit_segment_magic(),
+            parser: signatures::stuffit::stuffit_segment_parser,
+            description: signatures::stuffit::SEGMENT_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

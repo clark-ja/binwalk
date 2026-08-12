@@ -155,6 +155,7 @@ pub mod seama;
 pub mod sevenzip;
 pub mod shrs;
 pub mod squashfs;
+pub mod stuffit;
 pub mod svg;
 pub mod tplink;
 pub mod trx;

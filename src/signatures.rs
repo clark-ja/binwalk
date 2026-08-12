@@ -184,6 +184,7 @@ pub mod sevenzip;
 pub mod shrs;
 pub mod squashfs;
 pub mod srec;
+pub mod stuffit;
 pub mod svg;
 pub mod tarball;
 pub mod tplink;

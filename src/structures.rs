@@ -125,6 +125,7 @@ pub mod ext;
 pub mod fat;
 pub mod gif;
 pub mod gzip;
+pub mod installshield;
 pub mod iso9660;
 pub mod jboot;
 pub mod jffs2;

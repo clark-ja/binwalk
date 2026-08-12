@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // bittorrent
+        signatures::common::Signature {
+            name: "bittorrent".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::bittorrent::bittorrent_magic(),
+            parser: signatures::bittorrent::bittorrent_parser,
+            description: signatures::bittorrent::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

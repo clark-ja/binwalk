@@ -101,6 +101,7 @@ pub mod androidsparse;
 pub mod apfs;
 pub mod arj;
 pub mod autel;
+pub mod bencode;
 pub mod binhdr;
 pub mod bmp;
 pub mod btrfs;

@@ -113,6 +113,7 @@ pub mod arcadyan;
 pub mod arj;
 pub mod autel;
 pub mod binhdr;
+pub mod bittorrent;
 pub mod bmp;
 pub mod btrfs;
 pub mod bzip2;

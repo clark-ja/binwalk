@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // kgb
+        signatures::common::Signature {
+            name: "kgb".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::kgb::kgb_magic(),
+            parser: signatures::kgb::kgb_parser,
+            description: signatures::kgb::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

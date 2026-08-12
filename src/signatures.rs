@@ -106,6 +106,7 @@
 //! }
 //! ```
 pub mod aes;
+pub mod afx;
 pub mod android_bootimg;
 pub mod androidsparse;
 pub mod apfs;

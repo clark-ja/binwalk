@@ -380,6 +380,28 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // nagra pk
+        signatures::common::Signature {
+            name: "nagra_pk".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::nagra::nagra_pk_magic(),
+            parser: signatures::nagra::nagra_pk_parser,
+            description: signatures::nagra::PK_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // nagra constant key
+        signatures::common::Signature {
+            name: "nagra_constant_key".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::nagra::nagra_constant_key_magic(),
+            parser: signatures::nagra::nagra_constant_key_parser,
+            description: signatures::nagra::CONSTANT_KEY_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

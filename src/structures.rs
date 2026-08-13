@@ -111,6 +111,7 @@ pub mod cpio;
 pub mod cramfs;
 pub mod csman;
 pub mod deb;
+pub mod der;
 pub mod dkbs;
 pub mod dlink_tlv;
 pub mod dlob;

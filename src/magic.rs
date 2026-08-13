@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // DER encoded key, certificate or signature
+        signatures::common::Signature {
+            name: "der".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::der::der_magic(),
+            parser: signatures::der::der_parser,
+            description: signatures::der::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

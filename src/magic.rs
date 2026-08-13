@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // iriver database
+        signatures::common::Signature {
+            name: "iriver".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::iriver::iriver_magic(),
+            parser: signatures::iriver::iriver_parser,
+            description: signatures::iriver::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // samsung modem TOC index
+        signatures::common::Signature {
+            name: "samsung_toc".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::samsung_toc::samsung_toc_magic(),
+            parser: signatures::samsung_toc::samsung_toc_parser,
+            description: signatures::samsung_toc::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

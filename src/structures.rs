@@ -151,6 +151,7 @@ pub mod rar;
 pub mod riff;
 pub mod romfs;
 pub mod rtk;
+pub mod samsung_toc;
 pub mod seama;
 pub mod sevenzip;
 pub mod shrs;

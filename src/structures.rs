@@ -145,6 +145,7 @@ pub mod pcap;
 pub mod pchrom;
 pub mod pe;
 pub mod png;
+pub mod psx;
 pub mod qcow;
 pub mod qnx;
 pub mod rar;

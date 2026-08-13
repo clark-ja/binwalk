@@ -172,6 +172,7 @@ pub mod pem;
 pub mod pjl;
 pub mod pkcs_der;
 pub mod png;
+pub mod psx;
 pub mod qcow;
 pub mod qnx;
 pub mod rar;

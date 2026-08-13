@@ -121,6 +121,7 @@ pub mod cfe;
 pub mod chk;
 pub mod common;
 pub mod compressd;
+pub mod console;
 pub mod copyright;
 pub mod cpio;
 pub mod cramfs;

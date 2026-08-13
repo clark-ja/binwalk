@@ -380,6 +380,83 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // game boy rom
+        signatures::common::Signature {
+            name: "gameboy".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::console::gameboy_magic(),
+            parser: signatures::console::gameboy_parser,
+            description: signatures::console::GAMEBOY_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // game boy advance rom
+        signatures::common::Signature {
+            name: "gba".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::console::gba_magic(),
+            parser: signatures::console::gba_parser,
+            description: signatures::console::GBA_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // sega mega drive rom
+        signatures::common::Signature {
+            name: "megadrive".to_string(),
+            short: true,
+            magic_offset: signatures::console::MEGADRIVE_MAGIC_OFFSET,
+            always_display: false,
+            magic: signatures::console::megadrive_magic(),
+            parser: signatures::console::megadrive_parser,
+            description: signatures::console::MEGADRIVE_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // nintendo ds rom
+        signatures::common::Signature {
+            name: "nds".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::console::nds_magic(),
+            parser: signatures::console::nds_parser,
+            description: signatures::console::NDS_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // xbox executable
+        signatures::common::Signature {
+            name: "xbe".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::console::xbe_magic(),
+            parser: signatures::console::xbe_parser,
+            description: signatures::console::XBE_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // xbox xip
+        signatures::common::Signature {
+            name: "xip".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::console::xip_magic(),
+            parser: signatures::console::xip_parser,
+            description: signatures::console::XIP_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // xbox xtf
+        signatures::common::Signature {
+            name: "xtf".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::console::xtf_magic(),
+            parser: signatures::console::xtf_parser,
+            description: signatures::console::XTF_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

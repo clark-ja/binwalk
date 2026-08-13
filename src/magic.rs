@@ -380,6 +380,50 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // DES pc1 table
+        signatures::common::Signature {
+            name: "des_pc1".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::des::des_pc1_magic(),
+            parser: signatures::des::des_pc1_parser,
+            description: signatures::des::PC1_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // DES pc2 table
+        signatures::common::Signature {
+            name: "des_pc2".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::des::des_pc2_magic(),
+            parser: signatures::des::des_pc2_parser,
+            description: signatures::des::PC2_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // DES sp1 table
+        signatures::common::Signature {
+            name: "des_sp1".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::des::des_sp1_magic(),
+            parser: signatures::des::des_sp1_parser,
+            description: signatures::des::SP1_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // DES sp2 table
+        signatures::common::Signature {
+            name: "des_sp2".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::des::des_sp2_magic(),
+            parser: signatures::des::des_sp2_parser,
+            description: signatures::des::SP2_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

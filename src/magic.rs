@@ -380,6 +380,28 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // mcrypt 2.5
+        signatures::common::Signature {
+            name: "mcrypt25".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mcrypt::mcrypt25_magic(),
+            parser: signatures::mcrypt::mcrypt25_parser,
+            description: signatures::mcrypt::V25_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // mcrypt 2.2
+        signatures::common::Signature {
+            name: "mcrypt22".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mcrypt::mcrypt22_magic(),
+            parser: signatures::mcrypt::mcrypt22_parser,
+            description: signatures::mcrypt::V22_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

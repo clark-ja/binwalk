@@ -112,6 +112,7 @@ pub mod apfs;
 pub mod arcadyan;
 pub mod arj;
 pub mod autel;
+pub mod base64_table;
 pub mod binhdr;
 pub mod bmp;
 pub mod btrfs;

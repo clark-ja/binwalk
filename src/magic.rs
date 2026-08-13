@@ -380,6 +380,28 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // base64 standard index table
+        signatures::common::Signature {
+            name: "base64_table".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::base64_table::standard_table_magic(),
+            parser: signatures::base64_table::standard_table_parser,
+            description: signatures::base64_table::STANDARD_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // base64 sercomm index table
+        signatures::common::Signature {
+            name: "base64_table_sercomm".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::base64_table::sercomm_table_magic(),
+            parser: signatures::base64_table::sercomm_table_parser,
+            description: signatures::base64_table::SERCOMM_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

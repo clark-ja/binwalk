@@ -380,6 +380,61 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // mysql table definition
+        signatures::common::Signature {
+            name: "frm".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mysql::frm_magic(),
+            parser: signatures::mysql::frm_parser,
+            description: signatures::mysql::FRM_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // mysql misam index
+        signatures::common::Signature {
+            name: "misam_index".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mysql::misam_index_magic(),
+            parser: signatures::mysql::misam_index_parser,
+            description: signatures::mysql::MISAM_INDEX_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // mysql misam data
+        signatures::common::Signature {
+            name: "misam_data".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mysql::misam_data_magic(),
+            parser: signatures::mysql::misam_data_parser,
+            description: signatures::mysql::MISAM_DATA_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // mysql isam index
+        signatures::common::Signature {
+            name: "isam_index".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mysql::isam_index_magic(),
+            parser: signatures::mysql::isam_index_parser,
+            description: signatures::mysql::ISAM_INDEX_DESCRIPTION.to_string(),
+            extractor: None,
+        },
+        // mysql isam data
+        signatures::common::Signature {
+            name: "isam_data".to_string(),
+            short: true,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::mysql::isam_data_magic(),
+            parser: signatures::mysql::isam_data_parser,
+            description: signatures::mysql::ISAM_DATA_DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

@@ -48,6 +48,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::xz::DESCRIPTION.to_string(),
             extractor: Some(extractors::lzma::lzma_extractor()),
         },
+        // GNU tar incremental snapshot
+        signatures::common::Signature {
+            name: "tar_snapshot".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::tar_snapshot::tar_snapshot_magic(),
+            parser: signatures::tar_snapshot::tar_snapshot_parser,
+            description: signatures::tar_snapshot::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // tarball
         signatures::common::Signature {
             name: "tarball".to_string(),

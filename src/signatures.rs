@@ -185,6 +185,7 @@ pub mod shrs;
 pub mod squashfs;
 pub mod srec;
 pub mod svg;
+pub mod tar_snapshot;
 pub mod tarball;
 pub mod tplink;
 pub mod trx;

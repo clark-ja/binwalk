@@ -179,6 +179,7 @@ pub mod riff;
 pub mod romfs;
 pub mod rsa;
 pub mod rtk;
+pub mod screnc;
 pub mod seama;
 pub mod sevenzip;
 pub mod shrs;

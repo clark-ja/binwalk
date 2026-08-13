@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // windows script encoded data
+        signatures::common::Signature {
+            name: "screnc".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::screnc::screnc_magic(),
+            parser: signatures::screnc::screnc_parser,
+            description: signatures::screnc::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),

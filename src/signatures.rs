@@ -136,6 +136,7 @@ pub mod dms;
 pub mod dpapi;
 pub mod dtb;
 pub mod dxbc;
+pub mod ebml;
 pub mod ecos;
 pub mod efigpt;
 pub mod elf;

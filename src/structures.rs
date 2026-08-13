@@ -119,6 +119,7 @@ pub mod dms;
 pub mod dpapi;
 pub mod dtb;
 pub mod dxbc;
+pub mod ebml;
 pub mod efigpt;
 pub mod elf;
 pub mod ext;

@@ -111,6 +111,7 @@ pub mod androidsparse;
 pub mod apfs;
 pub mod arcadyan;
 pub mod arj;
+pub mod arj_jar;
 pub mod autel;
 pub mod binhdr;
 pub mod bmp;

@@ -380,6 +380,17 @@ pub fn patterns() -> Vec<signatures::common::Signature> {
             description: signatures::lz4::DESCRIPTION.to_string(),
             extractor: Some(extractors::lz4::lz4_extractor()),
         },
+        // zyxel voice data
+        signatures::common::Signature {
+            name: "zyxel_voice".to_string(),
+            short: false,
+            magic_offset: 0,
+            always_display: false,
+            magic: signatures::zyxel_voice::zyxel_voice_magic(),
+            parser: signatures::zyxel_voice::zyxel_voice_parser,
+            description: signatures::zyxel_voice::DESCRIPTION.to_string(),
+            extractor: None,
+        },
         // lzop
         signatures::common::Signature {
             name: "lzop".to_string(),
